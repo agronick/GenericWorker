@@ -1,6 +1,7 @@
 from payload import Payload
 from tasks import *
 import gearman
+from pprint import pprint
 
 
 gm_client = gearman.GearmanClient(['localhost:4730'])
@@ -24,9 +25,28 @@ bashtask.command = "ls"
 payload.add_task(bashtask)
 
 sshtask = SshTask()
-sshtask.to_host = "192.168.1.13"
-sshtask.command = "cd /etc/apt; ls"
+sshtask.to_host = ""
+sshtask.command = "cd /srv/www/htdocs; ls"
+sshtask.username = ""
+sshtask.password = ""
 payload.add_task(sshtask)
+
+scptask = ScpPutTask()
+scptask.to_host = "localhost"
+scptask.username = ""
+scptask.password = ""
+scptask.from_dir = "/tmp/foo1"
+scptask.to_dir = "/tmp/foo2"
+payload.add_task(scptask)
+
+
+scptask = ScpGetTask()
+scptask.to_host = ""
+scptask.username = ""
+scptask.password = ""
+scptask.from_dir = "/tmp/foo3"
+scptask.to_dir = "/tmp/foo4"
+payload.add_task(scptask)
 
 seril = payload.serilize()
 completed_job_request = gm_client.submit_job("generic_worker", seril)
