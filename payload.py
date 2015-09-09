@@ -21,18 +21,25 @@ class Payload:
         
     def run(self):
         returns = []
-        for task in self.tasks:
-            msg = task.run()
-            ret = {
-                'status' : task.status,
-                'message' : msg
-            }
-            returns.append(ret)
-            if not task.status and not task.continue_on_fail:
-                return json.dumps(returns)
-            
-        return json.dumps(returns)
-            
+        try:
+             for task in self.tasks:
+                 msg = task.run()
+                 ret = {
+                     'status' : task.status,
+                     'message' : msg
+                 }
+                 returns.append(ret)
+                 if not task.status and not task.continue_on_fail:
+                     return json.dumps(returns)
+                 
+        except Exception, e:
+             ret = {
+               'status' : False,
+               'message' : 'Exception:' + str(e)
+             }
+             returns.append(ret)
+        finally:
+             return json.dumps(returns)
             
         
     def serilize(self):

@@ -41,9 +41,10 @@ class BashTask(TaskInterface):
 class PingTask(BashTask):
     
     host = ""
+    times = 3
     
     def run(self):
-        self.command = "ping -c 3 " + self.host
+        self.command = "ping -c " + str(self.times) + "  " + self.host
         return super(PingTask, self).run()
 
 
