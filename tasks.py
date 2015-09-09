@@ -35,7 +35,7 @@ class BashTask(TaskInterface):
     def run(self):
         status, response = commands.getstatusoutput(self.command)
         self.status = status == 0
-        return response
+        return response.strip()
     
     
 class PingTask(BashTask):
@@ -106,7 +106,7 @@ class SshTask(TaskInterface):
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(self.command)
         ret = "".join(ssh_stdout.readlines()) + "   " + "".join(ssh_stderr.readlines())
         self.status = True
-        return ret
+        return ret.strip()
     
 def get_ssh_client():
     ssh = paramiko.SSHClient()

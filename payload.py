@@ -21,23 +21,27 @@ class Payload:
         
     def run(self):
         returns = []
+        ret = {}
         try:
+             i = 0
              for task in self.tasks:
-                 msg = task.run()
                  ret = {
-                     'status' : task.status,
-                     'message' : msg
+                     'name' : task.name,
+                     'order' : str(i),
                  }
+                 msg = task.run()
+                 ret['status'] = task.status
+                 ret['message'] = msg
                  returns.append(ret)
+                 i += 1
                  if not task.status and not task.continue_on_fail:
                      return json.dumps(returns)
                  
         except Exception, e:
-             ret = {
-               'status' : False,
-               'message' : 'Exception:' + str(e)
-             }
+             ret['status'] = False
+             ret['message'] = 'Exception:' + str(e)
              returns.append(ret)
+             return json.dumps(returns)
         finally:
              return json.dumps(returns)
             
@@ -57,6 +61,7 @@ class Payload:
         for item in data:
             constructor = globals()[item['name']]
             instance = constructor()
+            instance.name = item['name']
  
             for key, value in item['class_props'].items():
                 setattr(instance, key, value)
